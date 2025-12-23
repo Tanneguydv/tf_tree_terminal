@@ -10,6 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('bin', ['bin/tf-tree']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -18,6 +19,7 @@ setup(
     description='A lightweight ROS 2 utility to visualize the Coordinate Transform (TF) tree directly in the terminal with a folder-style structure.',
     license='MIT License',
     tests_require=['pytest'],
+    scripts=['bin/tf-tree'],
     entry_points={
         'console_scripts': [
             'show = tf_tree_terminal.tree_node:main'
