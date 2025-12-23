@@ -4,6 +4,13 @@ from tf2_ros import Buffer, TransformListener
 import yaml
 import sys
 import os
+from datetime import datetime
+
+ASCII = r"""
+░▀█▀░█▀▀░░░░░▀█▀░█▀▄░█▀▀░█▀▀
+░░█░░█▀▀░▄▄▄░░█░░█▀▄░█▀▀░█▀▀
+░░▀░░▀░░░░░░░░▀░░▀░▀░▀▀▀░▀▀▀
+"""
 
 class TFTreeTerminal(Node):
     def __init__(self):
@@ -11,6 +18,7 @@ class TFTreeTerminal(Node):
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
         
+        print(ASCII)
         self.get_logger().info("Buffering TF data for 2 seconds...")
         self.timer = self.create_timer(2.0, self.timer_callback)
         
@@ -61,8 +69,13 @@ class TFTreeTerminal(Node):
         # Save to file if requested
         if self.output_file:
             try:
+                # Generate timestamp
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
                 with open(self.output_file, 'w') as f:
                     f.write(final_output)
+                    f.write(f"\nGenerated on: {now}\n") # Add the date and time here
+                
                 print(f"\n[INFO] Tree saved to: {os.path.abspath(self.output_file)}")
             except Exception as e:
                 print(f"\n[ERROR] Could not save to file: {e}")

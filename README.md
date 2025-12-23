@@ -1,4 +1,11 @@
 # TF Tree Terminal
+```text
++------------------------------------------+
+|  ░▀█▀░█▀▀░░░░░▀█▀░█▀▄░█▀▀░█▀▀           |
+|  ░░█░░█▀▀░▄▄▄░░█░░█▀▄░█▀▀░█▀▀           |
+|  ░░▀░░▀░░░░░░░░▀░░▀░▀░▀▀▀░▀▀▀           |
++------------------------------------------+
+```
 
 A simple ROS 2 Python tool that prints the current TF tree to your terminal using a recursive "folder-like" structure. This is useful for quickly verifying frame hierarchies without needing a GUI (Rviz) or generating PDF files.
 
@@ -27,19 +34,18 @@ A simple ROS 2 Python tool that prints the current TF tree to your terminal usin
 
 ## Usage
 
-Simply run the executable:
+Simply run the command :
+
+    tf-tree
+
+or the executable:
 
     ros2 run tf_tree_terminal show
-
-### Saving to a file
-To export the tree to a text file for documentation:
-
-    ros2 run tf_tree_terminal show ~/path/to/save/tree.txt
 
 ### Example Output
 
 ```text
---- Terminal TF Tree ---
+--- ROS 2 TF Tree Snapshot ---
 map
 └── odom
     └── base_footprint
@@ -49,9 +55,19 @@ map
             │   ├── front_axle
             │   └── rear_axle
             └── velodyne_link
-------------------------
+------------------------------
+Generated on: 2025-12-23 13:10:59
 
 ```
+
+### Saving to a file
+To export the tree to a text file for documentation:
+
+    tf-tree my-robot.txt
+
+or
+
+    ros2 run tf_tree_terminal show ~/path/to/save/tree.txt
 
 ## How it works
 
