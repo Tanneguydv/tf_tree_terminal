@@ -12,6 +12,7 @@ ASCII = r"""
 ░░▀░░▀░░░░░░░░▀░░▀░▀░▀▀▀░▀▀▀
 """
 
+
 class TFTreeTerminal(Node):
     def __init__(self):
         super().__init__('tf_tree_terminal')
@@ -74,7 +75,7 @@ class TFTreeTerminal(Node):
                 
                 with open(self.output_file, 'w') as f:
                     f.write(final_output)
-                    f.write(f"\nGenerated on: {now}\n") # Add the date and time here
+                    f.write(f"\nGenerated on: {now}\n")  # Add the date and time here
                 
                 print(f"\n[INFO] Tree saved to: {os.path.abspath(self.output_file)}")
             except Exception as e:
@@ -85,11 +86,19 @@ class TFTreeTerminal(Node):
         lines.append(f"{indent}{marker}{frame}")
 
         new_indent = indent + ("" if is_root else ("    " if is_last else "│   "))
-        
+         
         if frame in tree:
             children = sorted(tree[frame])
             for i, child in enumerate(children):
-                self._build_tree_string(child, tree, lines, new_indent, i == len(children)-1, False)
+                self._build_tree_string(
+                    child,
+                    tree,
+                    lines,
+                    new_indent,
+                    i == len(children)-1,
+                    False
+                    )
+
 
 def main():
     rclpy.init()
