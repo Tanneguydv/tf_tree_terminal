@@ -17,7 +17,7 @@ TF-TREE CLI DEBUGGER
 
 
 class TFTreeCLI(Node):
-    def __init__(self, profile, output_file, keep_alive):
+    def __init__(self, profile, output_file, keep_alive, light):
         super().__init__('tf_tree_cli_helper')
         self.tf_buffer = Buffer(cache_time=rclpy.duration.Duration(seconds=10.0))
         self.tf_listener = TransformListener(self.tf_buffer, self, spin_thread=False)
@@ -25,6 +25,7 @@ class TFTreeCLI(Node):
         self.profile = profile
         self.output_file = output_file
         self.keep_alive = keep_alive
+        self.light = light
 
         self.profiles_config = {
             'mobile': {'req': ['map', 'odom', 'base_link'], 'desc': 'REP 105 (Mobile)'},
@@ -95,7 +96,8 @@ class TFTreeCLI(Node):
         for root in roots:
             self._print_recursive(root, tree, data, "", buf)
 
-        self._print_diagnostic(all_frames, buf)
+        if not self.light:
+            self._print_diagnostic(all_frames, buf)
 
     def _print_recursive(self, frame, tree, raw_data, indent, buf, is_last=True, is_root=True):
         stats = raw_data.get(frame, {})
@@ -126,17 +128,20 @@ class TFTreeCLI(Node):
 
         freq_label = f"{actual_hz:.1f} Hz" if actual_hz > 0 else "STATIC"
         marker = "" if is_root else ("└── " if is_last else "├── ")
-        buf.write(f"{indent}{marker}🔗 Link: {frame} [{freq_label}]{age_msg}\n")
+        if self.light:
+            buf.write(f"{indent}{marker}{frame}\n")
+        else:
+            buf.write(f"{indent}{marker}🔗 Link: {frame} [{freq_label}]{age_msg}\n")
 
-        if not is_root:
+        if not is_root and not self.light:
             tf_pub = self.get_publisher_name()
             js_pubs = self.get_joint_state_publishers()
             js_src = ", ".join(js_pubs) if js_pubs else "❌ none"
             sub_indent = indent + ("    " if is_last or is_root else "│   ")
             buf.write(
-                        f"{sub_indent}⚙️  Joint: to_{frame} "
-                        f"[TF: {tf_pub} | JointState: {js_src}]\n"
-                    )
+                f"{sub_indent}⚙️  Joint: to_{frame} "
+                f"[TF: {tf_pub} | JointState: {js_src}]\n"
+            )
 
         if frame in tree:
             for i, child in enumerate(sorted(tree[frame])):
@@ -176,10 +181,12 @@ def main():
     parser.add_argument('-p', '--profile', choices=['mobile', 'arm', 'auto'], default='auto')
     parser.add_argument('-s', '--save', type=str, metavar='FILE')
     parser.add_argument('-a', '--alive', action='store_true')
+    parser.add_argument('-l', '--light', action='store_true',
+                    help='Light mode: display only the TF tree structure')
     args, _ = parser.parse_known_args()
 
     rclpy.init()
-    node = TFTreeCLI(args.profile, args.save, args.alive)
+    node = TFTreeCLI(args.profile, args.save, args.alive, args.light)
 
     # We use MultiThreadedExecutor to keep the TF buffer updating
     # while the main loop waits for the timer.
