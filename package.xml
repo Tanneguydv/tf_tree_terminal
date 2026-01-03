@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>tf_tree_terminal</name>
-  <version>1.0.1</version>
+  <version>2.0.0</version>
   <description>A lightweight ROS 2 utility to visualize the Coordinate Transform (TF) tree directly in the terminal with a folder-style structure.</description>
   <maintainer email="tanneguydv@gmail.com">Tanneguy de Villemagne</maintainer>
   <license>MIT License</license>
