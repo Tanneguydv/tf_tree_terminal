@@ -178,9 +178,12 @@ class TFTreeCLI(Node):
 
 def main():
     parser = argparse.ArgumentParser(description="ROS 2 TF Tree CLI Helper")
-    parser.add_argument('-p', '--profile', choices=['mobile', 'arm', 'auto'], default='auto')
-    parser.add_argument('-s', '--save', type=str, metavar='FILE')
-    parser.add_argument('-a', '--alive', action='store_true')
+    parser.add_argument('-p', '--profile', choices=['mobile', 'arm', 'auto'], default='auto',
+                        help='Diagnostic mode')
+    parser.add_argument('-s', '--save', type=str, metavar='FILE',
+                        help='Export the analysis to a file')
+    parser.add_argument('-a', '--alive', action='store_true',
+                        help='Keep node alive; refreshes terminal every 5 seconds.')
     parser.add_argument('-l', '--light', action='store_true',
                     help='Light mode: display only the TF tree structure')
     args, _ = parser.parse_known_args()
