@@ -137,7 +137,7 @@ class TFTreeCLI(Node):
         freq_label = f"{actual_hz:.1f} Hz" if actual_hz > 0 else "STATIC"
         marker = "" if is_root else ("└── " if is_last else "├── ")
         if self.light:
-            buf.write(f"{indent}{marker}{frame}\n")
+            buf.write(f"{indent}{marker}{frame} ({freq_label})\n")
         else:
             buf.write(f"{indent}{marker}⚯ Link: {frame} [{freq_label}]{age_msg}\n")
 
