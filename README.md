@@ -36,6 +36,7 @@ Once built and sourced, you can use the `tf-tree` command:
 | `--alive` | `-a` | Keep node alive; refreshes terminal every 5 seconds. |
 | `--light` | `-l` | Get a light TF-Tree as output |
 | `--clear` | `-c` | Clear terminal screen before each refresh in alive mode |
+| `--no-color` | `-nc` | Disable ANSI colors in output |
 | `--help` | `-h` | Show help message and exit. |
 
 ### Examples
