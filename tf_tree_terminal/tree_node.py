@@ -17,7 +17,7 @@ TF-TREE CLI DEBUGGER
 
 
 class TFTreeCLI(Node):
-    def __init__(self, profile, output_file, keep_alive, light):
+    def __init__(self, profile, output_file, keep_alive, light, clear_screen):
         super().__init__('tf_tree_cli_helper')
         self.tf_buffer = Buffer(cache_time=rclpy.duration.Duration(seconds=10.0))
         self.tf_listener = TransformListener(self.tf_buffer, self, spin_thread=False)
@@ -26,6 +26,7 @@ class TFTreeCLI(Node):
         self.output_file = output_file
         self.keep_alive = keep_alive
         self.light = light
+        self.clear_screen = clear_screen
 
         self.profiles_config = {
             'mobile': {'req': ['map', 'odom', 'base_link'], 'desc': 'REP 105 (Mobile)'},
@@ -33,11 +34,13 @@ class TFTreeCLI(Node):
             'auto': {'req': ['base_link'], 'desc': 'Auto-Detection'}
         }
 
-        print(ASCII)
-        self.get_logger().info(f"Mode: {self.profiles_config[profile]['desc']}")
+        if not self.clear_screen:
+            print(ASCII)
+            self.get_logger().info(f"Mode: {self.profiles_config[profile]['desc']}")
 
         if self.keep_alive:
-            self.get_logger().info("Alive mode: Updating every 5s. Ctrl+C to stop.")
+            if not self.clear_screen:
+                self.get_logger().info("Alive mode: Updating every 5s. Ctrl+C to stop.")
             self.timer = self.create_timer(5.0, self.timer_callback)
         else:
             self.get_logger().info("Single-shot mode: Buffering (3s)...")
@@ -53,6 +56,11 @@ class TFTreeCLI(Node):
             return "N/A"
 
     def timer_callback(self):
+        # Clear terminal if requested
+        if self.clear_screen:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print(ASCII) # Re-print ASCII after clear for a clean dashboard look
+
         # Prepare output
         output_buffer = io.StringIO()
         self.perform_analysis(output_buffer)
@@ -185,11 +193,13 @@ def main():
     parser.add_argument('-a', '--alive', action='store_true',
                         help='Keep node alive; refreshes terminal every 5 seconds.')
     parser.add_argument('-l', '--light', action='store_true',
-                    help='Light mode: display only the TF tree structure')
+                        help='Light mode: display only the TF tree structure')
+    parser.add_argument('-c', '--clear', action='store_true',
+                        help='Clear terminal screen before each refresh in alive mode')
     args, _ = parser.parse_known_args()
 
     rclpy.init()
-    node = TFTreeCLI(args.profile, args.save, args.alive, args.light)
+    node = TFTreeCLI(args.profile, args.save, args.alive, args.light, args.clear)
 
     # We use MultiThreadedExecutor to keep the TF buffer updating
     # while the main loop waits for the timer.
@@ -199,7 +209,6 @@ def main():
     try:
         executor.spin()
     except (SystemExit, KeyboardInterrupt):
-        # Catching SystemExit allows a clean exit from timer_callback
         pass
     finally:
         if args.alive:
