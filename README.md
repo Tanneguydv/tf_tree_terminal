@@ -72,25 +72,25 @@ TF-TREE CLI DEBUGGER
 [INFO] [1767483009.499220178] [tf_tree_cli_helper]: Single-shot mode: Buffering (3s)...
 
 --- TF SNAPSHOT: 2026-01-03 23:30:12 ---
-🔗 Link: base_link [STATIC]
-├── 🔗 Link: base_footprint [STATIC] [STATIC]
-│   ⚙️  Joint: to_base_footprint [TF: robot_state_publisher | JointState: joint_state_publisher]
-├── 🔗 Link: camera_link [STATIC] [STATIC]
-│   ⚙️  Joint: to_camera_link [TF: robot_state_publisher | JointState: joint_state_publisher]
-│   └── 🔗 Link: camera_link_optical [STATIC] [STATIC]
-│       ⚙️  Joint: to_camera_link_optical [TF: robot_state_publisher | JointState: joint_state_publisher]
-├── 🔗 Link: left_wheel [12.3 Hz] [LIVE: 81.5ms]
-│   ⚙️  Joint: to_left_wheel [TF: robot_state_publisher | JointState: joint_state_publisher]
-└── 🔗 Link: right_wheel [12.3 Hz] [LIVE: 81.6ms]
-    ⚙️  Joint: to_right_wheel [TF: robot_state_publisher | JointState: joint_state_publisher]
-    └── 🔗 Link: test_orphan [STATIC] [STATIC]
-        ⚙️  Joint: to_test_orphan [TF: robot_state_publisher | JointState: joint_state_publisher]
-✅ /joint_states topic
+⚯ Link: base_link [STATIC]
+├── ⚯ Link: base_footprint [STATIC] [STATIC]
+│   ⚙  Joint: to_base_footprint [TF: robot_state_publisher | JointState: joint_state_publisher]
+├── ⚯ Link: camera_link [STATIC] [STATIC]
+│   ⚙  Joint: to_camera_link [TF: robot_state_publisher | JointState: joint_state_publisher]
+│   └── ⚯ Link: camera_link_optical [STATIC] [STATIC]
+│       ⚙  Joint: to_camera_link_optical [TF: robot_state_publisher | JointState: joint_state_publisher]
+├── ⚯ Link: left_wheel [12.3 Hz] [LIVE: 81.5ms]
+│   ⚙  Joint: to_left_wheel [TF: robot_state_publisher | JointState: joint_state_publisher]
+└── ⚯ Link: right_wheel [12.3 Hz] [LIVE: 81.6ms]
+    ⚙  Joint: to_right_wheel [TF: robot_state_publisher | JointState: joint_state_publisher]
+    └── ⚯ Link: test_orphan [STATIC] [STATIC]
+        ⚙  Joint: to_test_orphan [TF: robot_state_publisher | JointState: joint_state_publisher]
+✔ /joint_states topic
 
 --- COMPLIANCE DIAGNOSTIC ---
-❌ Recommendation: map
-❌ Recommendation: odom
-✅ Recommendation: base_link
+✖ Recommendation: map
+✖ Recommendation: odom
+✔ Recommendation: base_link
 ```
 and light mode, running ```tf-tree -l```
 
@@ -109,7 +109,7 @@ or broken, running ```tf-tree -l``` :
 
 ```bash
 --- TF SNAPSHOT: 2026-01-03 23:41:04 ---
-🔥 ALERT: 2 DISJOINTED TREES!
+⚠ ALERT: 2 DISJOINTED TREES!
 └─ Roots: right_wheel, base_link
 
 right_wheel
@@ -124,11 +124,11 @@ base_link
 
 ## 📊 Understanding the Output
 
-* **`🔗 Link`**: The TF frame name with its frequency (Hz).
+* **`⚯ Link`**: The TF frame name with its frequency (Hz).
 * **`[LIVE: 15ms]`**: Data is current.
 * **`[STALE: 2.1s]`**: The broadcaster has likely stopped or crashed.
-* **`⚙️ Joint`**: Lists the publisher nodes for both the transform and the joint state.
-* **`✅ Recommendation`**: Compliance status based on the selected profile.
+* **`⚙ Joint`**: Lists the publisher nodes for both the transform and the joint state.
+* **`✔ Recommendation`**: Compliance status based on the selected profile.
 
 ---
 
