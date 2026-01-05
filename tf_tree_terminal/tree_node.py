@@ -78,6 +78,7 @@ class TFTreeCLI(Node):
             rclpy.shutdown()
 
     def perform_analysis(self, buf):
+        self.hz_stats = []
         yaml_raw = self.tf_buffer.all_frames_as_yaml()
         if not yaml_raw or yaml_raw in ["{}", "[]"]:
             buf.write("\n✖ No TF tree detected.\n")
@@ -106,6 +107,7 @@ class TFTreeCLI(Node):
 
         if not self.light:
             self._print_diagnostic(all_frames, buf)
+            self._print_hz_summary(buf)
 
     def _print_recursive(self, frame, tree, raw_data, indent, buf, is_last=True, is_root=True):
         stats = raw_data.get(frame, {})
@@ -133,6 +135,8 @@ class TFTreeCLI(Node):
                         age_msg = f" [STALE: {age_ms/1000:.1f}s]"
             except:
                 age_msg = " [NO DATA]"
+        if actual_hz > 0 and not is_root:
+            self.hz_stats.append((actual_hz, frame))
 
         freq_label = f"{actual_hz:.1f} Hz" if actual_hz > 0 else "STATIC"
         marker = "" if is_root else ("└── " if is_last else "├── ")
@@ -156,6 +160,17 @@ class TFTreeCLI(Node):
                 self._print_recursive(child, tree, raw_data,
                                      indent + ("" if is_root else ("    " if is_last else "│   ")),
                                      buf, i == len(tree[frame])-1, False)
+
+    def _print_hz_summary(self, buf):
+        if not self.hz_stats:
+            return
+
+        min_hz, min_frame = min(self.hz_stats, key=lambda x: x[0])
+        max_hz, max_frame = max(self.hz_stats, key=lambda x: x[0])
+
+        buf.write("\n--- TF RATE SUMMARY ---\n")
+        buf.write(f"Min TF rate : {grey(f'{min_hz:.1f} Hz')} ({min_frame})\n")
+        buf.write(f"Max TF rate : {grey(f'{max_hz:.1f} Hz')} ({max_frame})\n")
 
     def _print_diagnostic(self, all_frames, buf):
         has_js = bool(self.get_publishers_info_by_topic('/joint_states'))
