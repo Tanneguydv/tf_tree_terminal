@@ -8,6 +8,16 @@ import os
 import io
 from datetime import datetime
 
+
+USE_COLOR = True
+
+GREY = "\033[90m"
+RESET = "\033[0m"
+
+def grey(text: str) -> str:
+    return text if not USE_COLOR else f"{GREY}{text}{RESET}"
+
+
 ASCII = r"""
 ░▀█▀░█▀▀░░░░░▀█▀░█▀▄░█▀▀░█▀▀
 ░░█░░█▀▀░▄▄▄░░█░░█▀▄░█▀▀░█▀▀
@@ -123,22 +133,23 @@ class TFTreeCLI(Node):
                 stamp_ns = t.header.stamp.sec * 1_000_000_000 + t.header.stamp.nanosec
 
                 if stamp_ns == 0:
-                    age_msg = " [STATIC]"
+                    age_msg = grey(" [STATIC]")
                     actual_hz = 0.0
                 else:
                     age_ms = (now.nanoseconds - stamp_ns) / 1e6
                     if age_ms < 500:
-                        age_msg = f" [LIVE: {age_ms:.1f}ms]"
+                        age_msg = grey(f" [LIVE: {age_ms:.1f}ms]")
                         if freq == 0.0 and age_ms > 0:
                             actual_hz = 1000.0 / age_ms
                     else:
-                        age_msg = f" [STALE: {age_ms/1000:.1f}s]"
+                        age_msg = grey(f" [STALE: {age_ms/1000:.1f}s]")
             except:
                 age_msg = " [NO DATA]"
         if actual_hz > 0 and not is_root:
             self.hz_stats.append((actual_hz, frame))
 
-        freq_label = f"{actual_hz:.1f} Hz" if actual_hz > 0 else "STATIC"
+        freq_label = grey(f"{actual_hz:.1f} Hz") if actual_hz > 0 else grey("STATIC")
+
         marker = "" if is_root else ("└── " if is_last else "├── ")
         if self.light:
             buf.write(f"{indent}{marker}{frame} ({freq_label})\n")
@@ -151,9 +162,9 @@ class TFTreeCLI(Node):
             js_src = ", ".join(js_pubs) if js_pubs else "✖ none"
             sub_indent = indent + ("    " if is_last or is_root else "│   ")
             buf.write(
-                f"{sub_indent}⚙  Joint: to_{frame} "
-                f"[TF: {tf_pub} | JointState: {js_src}]\n"
-            )
+                    f"{sub_indent}⚙  Joint: to_{frame} "
+                    f"[TF: {grey(tf_pub)} | JointState: {grey(js_src)}]\n"
+                )
 
         if frame in tree:
             for i, child in enumerate(sorted(tree[frame])):
@@ -211,7 +222,12 @@ def main():
                         help='Light mode: display only the TF tree structure')
     parser.add_argument('-c', '--clear', action='store_true',
                         help='Clear terminal screen before each refresh in alive mode')
+    parser.add_argument('-nc', '--no-color', action='store_true',
+                    help='Disable ANSI colors in output')
     args, _ = parser.parse_known_args()
+
+    global USE_COLOR
+    USE_COLOR = not args.no_color
 
     rclpy.init()
     node = TFTreeCLI(args.profile, args.save, args.alive, args.light, args.clear)
