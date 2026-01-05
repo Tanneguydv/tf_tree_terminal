@@ -72,7 +72,7 @@ class TFTreeCLI(Node):
     def perform_analysis(self, buf):
         yaml_raw = self.tf_buffer.all_frames_as_yaml()
         if not yaml_raw or yaml_raw in ["{}", "[]"]:
-            buf.write("\n❌ No TF tree detected.\n")
+            buf.write("\n✖ No TF tree detected.\n")
             return
 
         data = yaml.safe_load(yaml_raw)
@@ -90,7 +90,7 @@ class TFTreeCLI(Node):
 
         buf.write(f"\n--- TF SNAPSHOT: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ---\n")
         if len(roots) > 1:
-            buf.write(f"🔥 ALERT: {len(roots)} DISJOINTED TREES!\n")
+            buf.write(f"⚠ ALERT: {len(roots)} DISJOINTED TREES!\n")
             buf.write(f"└─ Roots: {', '.join(roots)}\n\n")
 
         for root in roots:
@@ -131,15 +131,15 @@ class TFTreeCLI(Node):
         if self.light:
             buf.write(f"{indent}{marker}{frame}\n")
         else:
-            buf.write(f"{indent}{marker}🔗 Link: {frame} [{freq_label}]{age_msg}\n")
+            buf.write(f"{indent}{marker}⚯ Link: {frame} [{freq_label}]{age_msg}\n")
 
         if not is_root and not self.light:
             tf_pub = self.get_publisher_name()
             js_pubs = self.get_joint_state_publishers()
-            js_src = ", ".join(js_pubs) if js_pubs else "❌ none"
+            js_src = ", ".join(js_pubs) if js_pubs else "✖ none"
             sub_indent = indent + ("    " if is_last or is_root else "│   ")
             buf.write(
-                f"{sub_indent}⚙️  Joint: to_{frame} "
+                f"{sub_indent}⚙  Joint: to_{frame} "
                 f"[TF: {tf_pub} | JointState: {js_src}]\n"
             )
 
@@ -151,12 +151,12 @@ class TFTreeCLI(Node):
 
     def _print_diagnostic(self, all_frames, buf):
         has_js = bool(self.get_publishers_info_by_topic('/joint_states'))
-        status = "✅" if has_js else "❌"
+        status = "✔" if has_js else "✖"
         buf.write(f"{status} /joint_states topic\n")
 
         buf.write("\n--- COMPLIANCE DIAGNOSTIC ---\n")
         for f in self.profiles_config[self.profile]['req']:
-            status = "✅" if f in all_frames else "❌"
+            status = "✔" if f in all_frames else "✖"
             buf.write(f"{status} Recommendation: {f}\n")
 
     def get_joint_state_publishers(self):
