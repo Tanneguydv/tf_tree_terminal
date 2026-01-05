@@ -35,6 +35,7 @@ Once built and sourced, you can use the `tf-tree` command:
 | `--save` | `-s` | Export the analysis to a file (e.g., `-s robot_report.txt`). |
 | `--alive` | `-a` | Keep node alive; refreshes terminal every 5 seconds. |
 | `--light` | `-l` | Get a light TF-Tree as output |
+| `--clear` | `-c` | Clear terminal screen before each refresh in alive mode |
 | `--help` | `-h` | Show help message and exit. |
 
 ### Examples
