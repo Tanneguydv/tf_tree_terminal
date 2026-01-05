@@ -7,7 +7,13 @@ import argparse
 import os
 import io
 from datetime import datetime
+import re
 
+# ANSI UTILS ----------------------------------------------
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+def strip_ansi(text):
+    return ANSI_RE.sub("", text)
 
 USE_COLOR = True
 
@@ -24,6 +30,7 @@ ASCII = r"""
 ░░▀░░▀░░░░░░░░▀░░▀░▀░▀▀▀░▀▀▀
 TF-TREE CLI DEBUGGER
 """
+#---------------------------------------------------------
 
 
 class TFTreeCLI(Node):
@@ -203,7 +210,7 @@ class TFTreeCLI(Node):
     def save_to_file(self, content):
         try:
             with open(self.output_file, 'w') as f:
-                f.write(content)
+                f.write(strip_ansi(content))
                 f.write(f"\nGenerated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
             print(f"[INFO] Saved to: {os.path.abspath(self.output_file)}")
         except Exception as e:
