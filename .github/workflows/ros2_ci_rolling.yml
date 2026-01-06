@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros-distro: [humble, jazzy, rolling]
+        ros-distro: rolling
 
     steps:
       - name: Checkout repository
