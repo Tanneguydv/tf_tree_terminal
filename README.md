@@ -1,4 +1,8 @@
-[![ROS 2 CI](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml/badge.svg?branch=master)](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml)
+# ROS2 CI
+
+![Humble Status](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml/badge.svg?branch=master&label=Humble)
+![Jazzy Status](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml/badge.svg?branch=master&label=Jazzy)
+![Rolling Status](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml/badge.svg?branch=master&label=Rolling)
 
 # TF-Tree CLI Debugger
 
