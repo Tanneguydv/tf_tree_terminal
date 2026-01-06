@@ -1,3 +1,5 @@
+[![ROS 2 CI](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml/badge.svg?branch=master)](https://github.com/Tanneguydv/tf_tree_terminal/actions/workflows/ros2-ci.yml)
+
 # TF-Tree CLI Debugger
 
 ```text
