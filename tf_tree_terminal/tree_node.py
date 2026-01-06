@@ -218,7 +218,7 @@ class TFTreeCLI(Node):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ROS 2 TF Tree CLI Helper")
+    parser = argparse.ArgumentParser(description="ROS2 TF Tree CLI Helper")
     parser.add_argument('-p', '--profile', choices=['mobile', 'arm', 'auto'], default='auto',
                         help='Diagnostic mode')
     parser.add_argument('-s', '--save', type=str, metavar='FILE',
