@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros-distro: jazzy
+        ros-distro: [jazzy]
 
     steps:
       - name: Checkout repository
