@@ -21,7 +21,7 @@ jobs:
       - name: Setup ROS
         uses: ros-tooling/setup-ros@v0.7
         with:
-          version: ${{ matrix.ros-distro }}
+          required-ros-distributions: ${{ matrix.ros-distro }}
 
       - name: Setup Python
         uses: actions/setup-python@v4
